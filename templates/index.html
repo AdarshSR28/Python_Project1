@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        <center>
+            Quiz Marksheet Generator
+        </center>
+    </h1>
+    <center>
+        <h2>File Upload</h2>
+    </center>
+    <center>
+        {% if error %}
+        <p style="color:crimson">{{error}}</p>
+        {% endif %}
+    </center>
+    
+    <form action="/" method="post" enctype="multipart/form-data">
+        <center>
+            <div>
+                <label for="master_roll">Upload Master Roll File: </label>
+                <input type="file" name="master_roll" value="master_roll">
+            </div>
+            <br>
+            <div>
+                <label for="responses">Upload Student Responses File: </label>
+                <input type="file" name="responses" value="responses">
+            </div>
+            <br>
+            <input type="submit" name="submit_files" value="Submit">
+            
+        </center>
+    <center>
+        {% if success %}
+        <p style="color:#0000ff">Your files have been sucessfully uploaded to the uploads folder in the current directory!</p>
+        {% endif %}
+    </center>
+    <br>
+    <center>
+        <h2>Generator</h2>
+            <h4>
+                <div>
+                    <label for="positive">Enter marks for correct ans:</label>
+                    <input type="text" name='positive' placeholder="+ve points">
+                </div>
+                <div>
+                    <label for="negative">Enter marks for wrong ans (without -ve sign):</label>
+                    <input type="text" name='negative' placeholder="-ve points">
+                </div>
+            </h4>
+            <div>
+                <label for="gen_mark">Click to generate roll number wise marksheet: </label>
+                <input type="submit" name='gen_mark' value='Generate Marksheet'></input>
+                <center>
+                    {% if error_rwise %}
+                    <p style="color:crimson">{{error_rwise}}</p>
+                    {% endif %}
+                </center>
+                {% if success_rwise %}
+                <p style="color:#0000ff">Your files have been sucessfully generated in the output folder in the current directory!</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="gen_concise">Click to generate Concise marksheet: </label>
+                <input type="submit" name='gen_concise' value='Generate Concise'></input>
+                <center>
+                    {% if error_cwise %}
+                    <p style="color:crimson">{{error_cwise}}</p>
+                    {% endif %}
+                </center>
+                {% if success_cwise %}
+                <p style="color:#0000ff">Your file has been sucessfully generated in the output folder in the current directory!</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="gen_email">Click to send email to all students: </label>
+                <input type="submit" name='gen_email' value='Send Email'></input>
+                <center>
+                    {% if error_mail %}
+                    <p style="color:crimson">{{error_mail}}</p>
+                    {% endif %}
+                </center>
+                {% if success_mail %}
+                <p style="color:#0000ff">Your files have been sucessfully sent ot all students!</p>
+                {% endif %}
+            </div>
+        </center>
+        </form>
+        
+    
+</body>
+</html>
