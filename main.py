@@ -6,13 +6,30 @@ import shutil
 from werkzeug.wrappers import response
 import sys
 import rwisegenerator as rwise
+from flask_mail import *
 
 app = Flask(__name__)
+app.config['MAIL_SERVER']='smtp.gmail.com'  
+app.config['MAIL_PORT']=465  
+app.config['MAIL_USERNAME'] = 'ee04ee05pythonproj@gmail.com'  
+app.config['MAIL_PASSWORD'] = "ee04ee05python"  
+app.config['MAIL_USE_TLS'] = False  
+app.config['MAIL_USE_SSL'] = True 
+mail = Mail(app) 
 ALLOWED_EXTS = {"csv"}
 
 def check_file(file):
     return '.' in file and file.rsplit('.',1)[1].lower() in ALLOWED_EXTS
 
+def gen_email():
+    msg = Message(subject = "hello",
+    body = "hello", sender = "ee04ee05pythonproj@gmail.com", 
+    recipients = ["rockingadarsh28@gmail.com"])
+    with app.open_resource(".\\outputs\\1401CB01.xlsx") as fp:
+        msg.attach("1401CB01","text/xlsx",fp.read())
+        mail.send(msg)
+    return True
+    
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
@@ -78,6 +95,11 @@ def index():
                     error_rwise = "Error in manipulating files! Please try again!"
                     return render_template("index.html", error_rwise = error_rwise)
                 return render_template("index.html",success_rwise="1")
+        
+        if 'gen_email' in request.form:
+            if gen_email():
+                return render_template('index.html',success_mail = '1')
+            return render_template('index.html', error_mail = "Error in sending mails!")
 
 
     return render_template('index.html')
