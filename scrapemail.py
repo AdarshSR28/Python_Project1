@@ -1,8 +1,6 @@
 import pandas as pd
 import os
 
-from pandas.core.arrays.categorical import contains
-
 def roll_mail_mapping():
     
     folder = ".\\uploads"

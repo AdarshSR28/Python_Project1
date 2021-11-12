@@ -3,67 +3,84 @@ import csv , openpyxl
 import pandas as pd
 from openpyxl import Workbook
 import shutil
+from openpyxl import Workbook
+from openpyxl.styles import Font,Alignment,Border,Side
+from openpyxl.drawing.image import Image
 os.system('cls')
-print ("hello")
+def IsEmpty(dict):
+    for element in dict:
+        if element:
+            return True
+        return False
+
+def answer_extractor(file):
+    answer_record={}
+    for lines in file:
+        if (lines[6]!='Roll Number'):
+            list=[]
+            i=7
+            while(i<35):
+                list.append(lines[i])
+                i+=1
+            answer_record[lines[6]]=list
+
+    return answer_record
+
+
+def information_extractor(file):
+    dict=[]
+    for line in file:
+        temp_dict2={}
+        for key,value in line.items():
+            if (key==''):
+                continue
+            else:
+                temp_dict2[key]=value
+        
+        dict.append(temp_dict2)
+    return dict
+
+
+def result_generator(file):
+    final_record={}
+    answer=file["ANSWER"]
+    for line in file:
+        if line == "ANSWER":
+            continue
+        else:
+            result={"right":0,"wrong":0,"not answered":0}
+            i=0
+            for ans in file[line]:    
+                if ans==answer[i]:
+                    result["right"]+=1
+                    i=i+1
+                elif ans=='' :
+                    result["not answered"]+=1
+                    i=i+1
+                else :
+                    result["wrong"]+=1
+                    i=i+1
+                
+            final_record[line]=result
+    return final_record
+
+
 def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
     input_path=".\\uploads"
     count=0
     dict=[]
     answer_record={}
     final_record={}
-    def IsEmpty(dict):
-        for element in dict:
-            if element:
-                return True
-            return False
-    def answer_extractor(file):
-        for lines in file:
-            if (lines[6]!='Roll Number'):
-                list=[]
-                i=7
-                while(i<35):
-                    list.append(lines[i])
-                    i+=1
-                answer_record[lines[6]]=list
-    def information_extractor(file):
-        
-        for line in file:
-            temp_dict2={}
-            for key,value in line.items():
-                if (key==''):
-                    continue
-                else:
-                    temp_dict2[key]=value
-            
-            dict.append(temp_dict2)
-    def result_generator(file):
-        answer=file["ANSWER"]
-        for line in file:
-            if line == "ANSWER":
-                continue
-            else:
-                result={"right":0,"wrong":0,"not answered":0}
-                i=0
-                for ans in file[line]:    
-                    if ans==answer[i]:
-                        result["right"]+=1
-                        i=i+1
-                    elif ans=='' :
-                        result["not answered"]+=1
-                        i=i+1
-                    else :
-                        result["wrong"]+=1
-                        i=i+1
-                    
-                final_record[line]=result
+    
     path=os.path.join(input_path,"responses.csv")
     reader=open(path,'r')
     line_of_reader=csv.DictReader(reader)
     file=open(path,"r")
     file=csv.reader(file)
-    answer_extractor(file)
-    information_extractor(line_of_reader)
-    result_generator(answer_record)
+    answer_record = answer_extractor(file)
+    dict = information_extractor(line_of_reader)
+    final_record = result_generator(answer_record)
+
     if os.path.exists(".\outputs"):
         shutil.rmtree(".\outputs")
         os.mkdir(".\outputs")
@@ -71,20 +88,17 @@ def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
         os.mkdir(".\outputs")
     for file in dict:
         if file["Roll Number"]!="ANSWER":
-            from openpyxl import Workbook
-            from openpyxl.styles import Font,Alignment,Border,Side
-            from openpyxl.drawing.image import Image
             workbook=Workbook()
             sheet=workbook.active
             img=Image("project_header.PNG")
             alignment_heading=Alignment(horizontal='right',vertical='bottom')
             alignment_content=Alignment(horizontal='left',vertical='bottom')
             alignment_ans=Alignment(horizontal='center',vertical='bottom')
-            font_heading=Font(name='Calibri',size=14,bold=False)
-            font_content=Font(name='Calibri',size=14,bold=True)
-            right_color=Font(color="00FF00",name='Calibri',size=14,bold=False)
-            wrong_color=Font(color="ff0000",name='Calibri',size=14,bold=False)
-            give_color=Font(color="0000FF",name='Calibri',size=14,bold=False)
+            font_heading=Font(name='Century',size=14,bold=False)
+            font_content=Font(name='Century',size=14,bold=True)
+            right_color=Font(color="00FF00",name='Century',size=14,bold=False)
+            wrong_color=Font(color="ff0000",name='Century',size=14,bold=False)
+            give_color=Font(color="0000FF",name='Century',size=14,bold=False)
             border_style=Side(border_style="medium",color="000000")
             border=Border(top=border_style,bottom=border_style,left=border_style,right=border_style)
             sheet.add_image(img,"A1")
@@ -112,7 +126,7 @@ def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
             not_attempted=final_record[file["Roll Number"]]["not answered"]
             data={
                 "Right":[right,right_points,right*right_points],
-                "Wrong":[wrong,wrong_points,wrong*(wrong_points*-1)],
+                "Wrong":[wrong,wrong_points,wrong*wrong_points],
                 "Not Attempt":[not_attempted,0,''],
                 "Max":[right+wrong+not_attempted ,'',
                         str(right*right_points+wrong*wrong_points*-1)+"/"+(str(right_points*(right+not_attempted+wrong)))]    
