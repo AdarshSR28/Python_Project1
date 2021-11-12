@@ -90,6 +90,19 @@
                 <p style="color:#0000ff">Your files have been sucessfully sent to all students!</p>
                 {% endif %}
             </div>
+            <div>
+                <h5>Click the below button to refresh the server!</h5>
+                <input type="submit" name='refresh' value='Refresh'></input>
+                <center>
+                    {% if error_refresh %}
+                    <p style="color:crimson">{{error_refresh}}</p>
+                    {% endif %}
+                </center>
+                {% if success_refresh %}
+                <p style="color:#0000ff">Server refreshed! All uploaded files and generated files removed!</p>
+                {% endif %}
+
+            </div>
         </center>
         </form>
         

@@ -24,9 +24,8 @@ def check_file(file):
 
 def gen_email():
 
-    mail_mapping = scrapemail.roll_mail_mapping()
-
     try:
+        mail_mapping = scrapemail.roll_mail_mapping()
         output_path = ".\\outputs"
         for key in mail_mapping.keys():
             roll_no = key
@@ -46,6 +45,19 @@ def gen_email():
     except Exception:
         return False
 
+def refresh_server():
+    output_path = ".\\outputs"
+    uploads_path = ".\\uploads"
+    try:
+        if os.path.exists(output_path):
+            shutil.rmtree(output_path)
+        if os.path.exists(uploads_path):
+            shutil.rmtree(uploads_path)
+        
+        return True
+
+    except Exception:
+        return False
     
     
 
@@ -118,6 +130,11 @@ def index():
             if gen_email():
                 return render_template('index.html',success_mail = '1')
             return render_template('index.html', error_mail = "Error in sending mails!")
+        
+        if 'refresh' in request.form:
+            if refresh_server():
+                return render_template('index.html',success_refresh = '1')
+            return render_template('index.html',error_refresh = "There was some error in refreshing, please restart the server!")
 
 
     return render_template('index.html')
