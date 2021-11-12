@@ -7,6 +7,7 @@ from werkzeug.wrappers import response
 import sys
 import rwisegenerator as rwise
 from flask_mail import *
+import scrapemail
 
 app = Flask(__name__)
 app.config['MAIL_SERVER']='smtp.gmail.com'  
@@ -22,13 +23,30 @@ def check_file(file):
     return '.' in file and file.rsplit('.',1)[1].lower() in ALLOWED_EXTS
 
 def gen_email():
-    msg = Message(subject = "hello",
-    body = "hello", sender = "ee04ee05pythonproj@gmail.com", 
-    recipients = ["rockingadarsh28@gmail.com"])
-    with app.open_resource(".\\outputs\\1401CB01.xlsx") as fp:
-        msg.attach("1401CB01","text/xlsx",fp.read())
-        mail.send(msg)
-    return True
+
+    mail_mapping = scrapemail.roll_mail_mapping()
+
+    try:
+        output_path = ".\\outputs"
+        for key in mail_mapping.keys():
+            roll_no = key
+            recipient_list = mail_mapping[key]
+            resource_location = os.path.join(output_path,roll_no + ".xlsx")
+            msg = Message(subject = "Quiz Marks for student " + roll_no,
+            body = "Please file attached marks of quiz.", 
+            sender = "ee04ee05pythonproj@gmail.com", 
+            recipients = recipient_list)
+
+
+            with app.open_resource(resource_location) as fp:
+                msg.attach(roll_no + ".xlsx","text/xlsx",fp.read())
+                mail.send(msg)
+        
+        return True
+    except Exception:
+        return False
+
+    
     
 
 @app.route("/", methods = ["GET", "POST"])
