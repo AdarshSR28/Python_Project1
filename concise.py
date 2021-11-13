@@ -23,7 +23,7 @@ def csv_modifier(path,list,pos_list):
 
 def csv_modifier_blanks(concise_df):
     output_path = ".\\outputs"
-    print(concise_df)
+    # print(concise_df)
     if os.path.exists(output_path):
 
         if os.path.exists(os.path.join(output_path,"concise_marksheet.csv")):
