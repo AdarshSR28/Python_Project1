@@ -350,9 +350,9 @@ def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
                 j+=1
                 
             k+=1
-        if os.path.exists(os.path.join(".\outputs",file["Roll Number"]+".xlsx")):
-            os.remove(os.path.join(".\outputs",file["Roll Number"]+".xlsx"))
+        if os.path.exists(os.path.join(".\outputs",(file["Roll Number"].upper())+".xlsx")):
+            os.remove(os.path.join(".\outputs",(file["Roll Number"].upper())+".xlsx"))
         
-        workbook.save(os.path.join(".\outputs",file["Roll Number"]+".xlsx"))
+        workbook.save(os.path.join(".\outputs",(file["Roll Number"].upper())+".xlsx"))
 
 # generate_roll_no_wise_marksheet(4,0)

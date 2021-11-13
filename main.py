@@ -109,15 +109,15 @@ def index():
                 return render_template("index.html",error_rwise=error_rwise)
             else:
                 # check whether marks are input by the user or not
-                positive = 0
-                negative = 0
+                positive = 0.0
+                negative = 0.0
                 if 'positive' in request.form and 'negative' in request.form:
                     
                     try:
-                        positive = int(request.form['positive'])
-                        negative = int(request.form['negative'])
+                        positive = float(request.form['positive'])
+                        negative = float(request.form['negative'])
                     except Exception:
-                        error_rwise = "Scoring value error! Please enter valid marking scheme!"
+                        error_rwise = "Please fill the marking scheme for every file generation!"
                         return render_template("index.html", error_rwise = error_rwise)
 
                 try:
@@ -146,15 +146,15 @@ def index():
                 return render_template("index.html",error_cwise=error_cwise)
             else:
                 # check whether marks are input by the user or not
-                positive = 0
-                negative = 0
+                positive = 0.0
+                negative = 0.0
                 if 'positive' in request.form and 'negative' in request.form:
                     
                     try:
-                        positive = int(request.form['positive'])
-                        negative = int(request.form['negative'])
+                        positive = float(request.form['positive'])
+                        negative = float(request.form['negative'])
                     except Exception:
-                        error_cwise = "Scoring value error! Please enter valid marking scheme!"
+                        error_cwise = "Please fill the marking scheme for every file generation!"
                         return render_template("index.html", error_cwise = error_cwise)
 
                 try:
