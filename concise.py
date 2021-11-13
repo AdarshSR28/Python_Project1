@@ -87,6 +87,7 @@ def concise_blanks(right_points = 5,wrong_points = 1):
     if not  os.path.exists(".\outputs"):
         os.mkdir(".\outputs")
     blank_list_total = []
+    master_df=pd.read_csv(os.path.join("./uploads",master_roll_path),index_col="roll")
     for roll in master["roll"]:
     
         if roll.upper() not in (item.upper() for item in concise_marksheet["Roll Number"]):
@@ -96,6 +97,8 @@ def concise_blanks(right_points = 5,wrong_points = 1):
                     individual_blank.append(roll)
                 elif cols == "Score":
                     individual_blank.append("ABSENT")
+                elif cols == "Name":
+                    individual_blank.append(master_df.loc[roll]["name"])
                 else:
                     individual_blank.append(str("-"))
 
