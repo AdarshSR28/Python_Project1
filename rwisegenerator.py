@@ -65,6 +65,120 @@ def result_generator(file):
     return final_record
 
 
+def generate_blankfile(right_points=5, wrong_points=1):
+    input_path=".\\uploads"
+    master_roll_path=os.path.join(input_path,"master_roll.csv")
+    responses_path=os.path.join(input_path,"responses.csv")
+    master=pd.read_csv(master_roll_path)
+    response=pd.read_csv(responses_path)
+    master_df=pd.read_csv(master_roll_path,index_col="roll")
+    if not  os.path.exists(".\outputs"):
+        os.mkdir(".\outputs")
+    for roll in master["roll"]:
+        if roll.upper() not in (item.upper() for item in response["Roll Number"]):
+            workbook=Workbook()
+            sheet=workbook.active
+            img=Image("project_header.PNG")
+            alignment_heading=Alignment(horizontal='right',vertical='bottom')
+            alignment_content=Alignment(horizontal='left',vertical='bottom')
+            alignment_ans=Alignment(horizontal='center',vertical='bottom')
+            font_heading=Font(name='Century',size=14,bold=False)
+            font_content=Font(name='Century',size=14,bold=True)
+            right_color=Font(color="00FF00",name='Century',size=14,bold=False)
+            wrong_color=Font(color="ff0000",name='Century',size=14,bold=False)
+            give_color=Font(color="0000FF",name='Century',size=14,bold=False)
+            border_style=Side(border_style="medium",color="000000")
+            border=Border(top=border_style,bottom=border_style,left=border_style,right=border_style)
+            sheet.add_image(img,"A1")
+            sheet["A6"]="Name :"
+            sheet["A6"].font=font_heading
+            sheet["A6"].alignment=alignment_heading
+            sheet["B6"]=master_df.loc[roll]["name"]
+            sheet["B6"].font=font_content
+            sheet["B6"].alignment=alignment_content
+            sheet["D6"]="Exam :"
+            sheet["D6"].font=font_heading
+            sheet["D6"].alignment=alignment_heading
+            sheet["E6"]="quiz"
+            sheet["E6"].font=font_content
+            sheet["E6"].alignment=alignment_content
+            sheet["A7"]="Roll Number"
+            sheet["A7"].font=font_heading
+            sheet["A7"].alignment=alignment_heading
+            sheet["B7"]=roll
+            sheet["B7"].font=font_content
+            sheet["B7"].alignment=alignment_content
+            sheet.row_dimensions[5].height=20
+            right=" "
+            wrong=" "
+            not_attempted=" "
+            data={
+                "Right":[right,right_points," "],
+                "Wrong":[wrong,wrong_points, " "],
+                "Not Attempt":[not_attempted,0,''],
+                "Max":[right+wrong+not_attempted ,'',
+                        "Absent"]    
+            }
+            rownumber=["B","C","D","E"]
+            column_number=["10","11","12"]
+            sheet["A9"]=""
+            sheet["A10"]= "No."
+            sheet["A11"]="Marking"
+            sheet["A12"]="Total"
+            sheet["B9"]="Right"
+            sheet["C9"]="Wrong"
+            sheet["D9"]="Not Attempt"
+            sheet["E9"]="Max"
+            
+            space=["A9","A10","A11","A12","B9","C9","D9","E9"]
+            for p in space:
+                sheet[p].font=font_content
+                sheet[p].alignment=alignment_ans
+                sheet[p].border=border
+            for text in data:
+                i=0
+                if text=="Right":
+                    row=rownumber[0]
+                    for column in column_number:
+                        sheet[row + column]=data[text][i]
+                        sheet[row + column].font=right_color
+                        sheet[row + column].alignment=alignment_ans
+                        sheet[row + column].border=border
+                        i+=1
+                elif text=="Wrong":
+                    row=rownumber[1]
+                    for column in column_number:
+                        sheet[row + column]=data[text][i]
+                        sheet[row + column].font=wrong_color
+                        sheet[row + column].alignment=alignment_ans
+                        sheet[row + column].border=border
+                        i+=1
+                elif text=="Not Attempt":
+                    row=rownumber[2]
+                    for column in column_number:
+                        sheet[row + column]=data[text][i]
+                        sheet[row + column].alignment=alignment_ans
+                        sheet[row + column].font=font_content
+                        sheet[row + column].border=border
+                        i+=1
+                elif text=="Max":     
+                    row=rownumber[3]
+                    for column in column_number:
+                        sheet[row + column]=data[text][i]
+                        sheet[row + column].font=font_content
+                        sheet[row + column].alignment=alignment_ans
+                        sheet[row + column].border=border
+                        i+=1
+                    sheet["E12"].font=give_color
+            sheet.column_dimensions['A'].width=20
+            sheet.column_dimensions['B'].width=20
+            sheet.column_dimensions['C'].width=15
+            sheet.column_dimensions['D'].width=20
+            sheet.column_dimensions['E'].width=20
+            workbook.save(os.path.join(".\outputs",roll+".xlsx"))
+
+
+
 def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
     input_path=".\\uploads"
     count=0
@@ -81,11 +195,9 @@ def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
     dict = information_extractor(line_of_reader)
     final_record = result_generator(answer_record)
 
-    if os.path.exists(".\outputs"):
-        shutil.rmtree(".\outputs")
+    if not os.path.exists(".\outputs"):
         os.mkdir(".\outputs")
-    else:
-        os.mkdir(".\outputs")
+
     for file in dict:
         if file["Roll Number"]!="ANSWER":
             workbook=Workbook()
@@ -241,6 +353,9 @@ def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
                     j+=1
                     
                 k+=1
+            if os.path.exists(os.path.join(".\outputs",file["Roll Number"]+".xlsx")):
+                os.remove(os.path.join(".\outputs",file["Roll Number"]+".xlsx"))
+            
             workbook.save(os.path.join(".\outputs",file["Roll Number"]+".xlsx"))
 
 # generate_roll_no_wise_marksheet(4,0)

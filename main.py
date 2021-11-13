@@ -8,6 +8,7 @@ import sys
 import rwisegenerator as rwise
 from flask_mail import *
 import scrapemail
+import concise
 
 app = Flask(__name__)
 app.config['MAIL_SERVER']='smtp.gmail.com'  
@@ -67,7 +68,7 @@ def index():
     error = None
     success = None
     if request.method == 'POST':
-
+        
         if 'submit_files' in request.form:
             if 'master_roll' not in request.files or 'responses' not in request.files:
                 error = "Please upload both files!"
@@ -121,6 +122,7 @@ def index():
 
                 try:
                     rwise.generate_roll_no_wise_marksheet(positive,negative)
+                    rwise.generate_blankfile(positive,negative)
                 except Exception:
                     error_rwise = "Error in manipulating files! Please try again!"
                     return render_template("index.html", error_rwise = error_rwise)
@@ -135,6 +137,33 @@ def index():
             if refresh_server():
                 return render_template('index.html',success_refresh = '1')
             return render_template('index.html',error_refresh = "There was some error in refreshing, please restart the server!")
+
+        if 'gen_concise' in request.form:
+            error_cwise = None
+            f_path = ".\\uploads"
+            if not os.path.exists(f_path):
+                error_cwise = "Files uploaded cannot be found!"
+                return render_template("index.html",error_cwise=error_cwise)
+            else:
+                # check whether marks are input by the user or not
+                positive = 0
+                negative = 0
+                if 'positive' in request.form and 'negative' in request.form:
+                    
+                    try:
+                        positive = int(request.form['positive'])
+                        negative = int(request.form['negative'])
+                    except Exception:
+                        error_cwise = "Scoring value error! Please enter valid marking scheme!"
+                        return render_template("index.html", error_cwise = error_cwise)
+
+                try:
+                    concise.concise_marksheet(positive,negative)
+                    concise.concise_blanks(positive,negative)
+                except Exception:
+                    error_cwise = "Error in manipulating files! Please try again!"
+                    return render_template("index.html", error_cwise = error_cwise)
+                return render_template("index.html",success_cwise="1")
 
 
     return render_template('index.html')
