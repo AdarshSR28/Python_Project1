@@ -34,13 +34,13 @@ def csv_modifier_blanks(concise_df):
         os.mkdir(output_path)
         concise_df.to_csv( os.path.join(output_path,"concise_marksheet.csv") , index = "")
 
-def answer_extractor(file):
+def answer_extractor(file,length):
     answer_record={}
     for lines in file:
         if (lines[6]!='Roll Number'):
             list=[]
             i=7
-            while(i<35):
+            while(i<length):
                 list.append(lines[i])
                 i+=1
             answer_record[lines[6]]=list
@@ -123,8 +123,9 @@ def concise_marksheet(right_points=5,wrong_points=1):
     file=csv.reader(file)
     reader=open(path,'r')
     line_of_reader=csv.DictReader(reader)
+    df = pd.read_csv(path)
     dict = information_extractor(line_of_reader)
-    answer_record = answer_extractor(file)
+    answer_record = answer_extractor(file,len(df.columns))
     final_record = result_generator(answer_record)
     list_pos = []    
     for file in dict:

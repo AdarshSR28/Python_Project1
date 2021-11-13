@@ -13,13 +13,13 @@ def IsEmpty(dict):
             return True
         return False
 
-def answer_extractor(file):
+def answer_extractor(file,length):
     answer_record={}
     for lines in file:
         if (lines[6]!='Roll Number'):
             list=[]
             i=7
-            while(i<35):
+            while(i<length):
                 list.append(lines[i])
                 i+=1
             answer_record[lines[6]]=list
@@ -188,7 +188,8 @@ def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
     line_of_reader=csv.DictReader(reader)
     file=open(path,"r")
     file=csv.reader(file)
-    answer_record = answer_extractor(file)
+    df = pd.read_csv(path)
+    answer_record = answer_extractor(file,len(df.columns))
     dict = information_extractor(line_of_reader)
     final_record = result_generator(answer_record)
 
@@ -234,7 +235,7 @@ def generate_roll_no_wise_marksheet(right_points=5, wrong_points=1):
         not_attempted=final_record[file["Roll Number"]]["not answered"]
         data={
             "Right":[right,right_points,right*right_points],
-            "Wrong":[wrong,wrong_points,wrong*wrong_points],
+            "Wrong":[wrong,-1*wrong_points,-1*wrong*wrong_points],
             "Not Attempt":[not_attempted,0,''],
             "Max":[right+wrong+not_attempted ,'',
                     str(right*right_points+wrong*wrong_points*-1)+"/"+(str(right_points*(right+not_attempted+wrong)))]    
