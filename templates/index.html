@@ -59,10 +59,7 @@
                 <input type="submit" name='gen_mark' value='Generate Marksheet'></input>
                 <center>
                     {% if error_rwise %}
-                    <p style="color:crimson">{{error_rwise}}
-                    <br>
-                    Other possible Errors: Roll no with "ANSWER" not found; Files uploaded are incorrect.
-                    </p>
+                    <p style="color:crimson">{{error_rwise}}</p>
                     {% endif %}
                 </center>
                 {% if success_rwise %}
@@ -74,11 +71,7 @@
                 <input type="submit" name='gen_concise' value='Generate Concise Marksheet'></input>
                 <center>
                     {% if error_cwise %}
-                    <p style="color:crimson">{{error_cwise}}
-                    <br>
-                    Other possible Errors: Roll no with "ANSWER" not found; Files uploaded are incorrect.
-                    </p>
-
+                    <p style="color:crimson">{{error_cwise}}</p>
                     {% endif %}
                 </center>
                 {% if success_cwise %}

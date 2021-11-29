@@ -81,7 +81,7 @@ def index():
             response_filename = response_file.filename
 
             if response_filename == '' or master_filename == '':
-                error = "Filename is invalid! \n Make sure the name of the file is not blank and retry."
+                error = "Please upload both the files!"
                 return render_template('index.html',error=error)
             elif master_filename == '':
                 error = "Master Roll number filename is invalid"
@@ -161,7 +161,7 @@ def index():
                     concise.concise_marksheet(positive,negative)
                     concise.concise_blanks(positive,negative)
                 except Exception:
-                    error_cwise = "Error in manipulating files! Please try again!"
+                    error_cwise = "Roll no with 'ANSWER' not found or files uploaded are incorrect."
                     return render_template("index.html", error_cwise = error_cwise)
                 return render_template("index.html",success_cwise="1")
 
