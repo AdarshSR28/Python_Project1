@@ -1,5 +1,5 @@
 import re
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import os
 from flask.helpers import url_for
 import shutil
@@ -59,8 +59,11 @@ def refresh_server():
 
     except Exception:
         return False
-    
-    
+
+@app.route("/download")
+def download_concise():
+    path = "./outputs/concise_marksheet.csv"
+    return send_file(path, as_attachment=True)
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
@@ -163,6 +166,8 @@ def index():
                 except Exception:
                     error_cwise = "Roll no with 'ANSWER' not found or files uploaded are incorrect."
                     return render_template("index.html", error_cwise = error_cwise)
+
+                
                 return render_template("index.html",success_cwise="1")
 
 
