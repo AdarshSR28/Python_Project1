@@ -99,6 +99,8 @@ def concise_blanks(right_points = 5,wrong_points = 1):
                     individual_blank.append("ABSENT")
                 elif cols == "Name":
                     individual_blank.append(master_df.loc[roll]["name"])
+                elif cols == "Score_After_Negative":
+                    individual_blank.append("ABSENT")
                 else:
                     individual_blank.append(str("-"))
 
